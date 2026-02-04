@@ -376,7 +376,7 @@ body {
     justify-content: center;
     min-width: 28px;
     padding: 2px 5px;
-    background: var(--f1-light-gray);
+    background: /* var(--f1-light-gray)*/ rgb(119, 31, 31);
     border-radius: var(--radius-sm);
     font-family: var(--font-mono);
     font-weight: 700;
@@ -920,3 +920,4 @@ kbd {
    comentário final. Mantenha a organização por seções.
    
    ============================================================ */
+
