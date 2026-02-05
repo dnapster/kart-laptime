@@ -1,655 +1,356 @@
 <!DOCTYPE html>
-<html lang="pt-br">
-<!-- Feito por Samuel Gregorio https://www.linkedin.com/in/samuelgregorio/ -->
+<html lang="pt-BR">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>VMIX LapTime Control - By Samuka</title>
-    <link rel="stylesheet" href="style.css">
+  <meta charset="UTF-8">
+  <title>Painel Laptime vMix</title>
+  <link rel="stylesheet" href="style.css">
 </head>
 <body>
-    <div id="broadcast-area" class="broadcast-area">
-        
-        <div id="f1-header" class="f1-header">
-            <div class="f1-logo-section">
-                <img id="championship-logo" src="" alt="Logo" class="championship-logo" style="display: none;">
-                <svg viewBox="0 0 100 30" class="f1-logo-svg" id="f1-logo-svg">
-                    <text x="0" y="24" fill="white" font-family="Arial Black, sans-serif" font-size="28" font-weight="900"></text>
-                </svg>
-            </div>
-            <div class="race-info">
-                <div id="race-name" class="race-name" style="display: none;">Baterias 31/01/2026 - Corrida 2</div>
-                <div id="race-track" class="race-track">Traçado Pista 01</div>
-            </div>
-            <div id="race-timer" class="race-timer">
-                <span class="timer-laps">0</span>
-                <span class="timer-separator"> </span>
-                <span class="timer-time">00:04:58</span>
-            </div>
-        </div>
 
-        <div class="f1-table-container">
-            <table id="f1-table" class="f1-table">
-                <thead id="table-header">
-                    <tr>
-                        <th class="col-position" data-col="position">POS</th>
-                        <th class="col-number" data-col="number">NO</th>
-                        <th class="col-flag" data-col="flag"></th>
-                        <th class="col-name" data-col="name">NAME</th>
-                        <th class="col-initials" data-col="initials">INIC</th>
-                        <th class="col-lap" data-col="lap">LAP</th>
-                        <th class="col-time" data-col="time">TIME</th>
-                        <th class="col-gap" data-col="gap">GAP</th>
-                        <th class="col-interval" data-col="interval">INT</th>
-                        <th class="col-best-lap" data-col="best-lap">B.LAP</th>
-                        <th class="col-best-time" data-col="best-time">B.TIME</th>
-                    </tr>
-                </thead>
-                <tbody id="table-body">
-                </tbody>
-            </table>
-        </div>
+<div id="app">
 
-        <div id="loading" class="loading" style="display: none;">
-            <div class="loading-spinner"></div>
-            <p>Carregando dados...</p>
-        </div>
+  <!-- ÁREA DO LAPTIME -->
+  <div id="laptime-container">
+    <iframe id="laptime-frame" src="" frameborder="0"></iframe>
+  </div>
+
+  <!-- PAINEL DE CONTROLE -->
+  <div id="control-panel">
+
+    <h2>Painel Laptime</h2>
+
+    <!-- LINK -->
+    <div class="panel-section">
+      <label>Link do Laptime</label>
+      <input type="text" id="laptime-url" placeholder="Cole o link aqui">
+      <button onclick="loadLaptime()">Carregar</button>
     </div>
 
-    <div id="control-panel" class="control-panel">
-        <div class="control-header">
-            <h2>🎛️ Painel de Controle</h2>
-        </div>
-        
-        <div class="control-section">
-            <label for="laptime-url">🔗 URL do LiveTime:</label>
-            <div class="url-input-group">
-                <input type="text" id="laptime-url" placeholder="Cole o link do MyLapTime..." 
-                       value="https://livetime.azurewebsites.net/?uid=ce983e6e-082f-422f-81dc-b90133307d85">
-                <button id="btn-load" class="btn-primary">Carregar</button>
-            </div>
-        </div>
+    <!-- VISIBILIDADE -->
+    <div class="panel-section">
+      <h3>Exibição</h3>
 
-        <div class="control-section">
-            <h3>🏆 Cabeçalho Personalizado</h3>
-            <div class="header-config">
-                <label for="logo-url">URL da Logo (imagem):</label>
-                <input type="text" id="logo-url" placeholder="https://sanmarinokart.com.br/wp-content/uploads/2023/11/image-2.png">
-                <button id="btn-toggle-logo" class="toggle-btn active" data-display="logo">
-                    <span class="toggle-icon">✓</span>
-                    <span class="toggle-label">Mostrar Logo Customizada</span>
-                </button>
-            </div>
-            <div class="header-config" style="margin-top: 10px;">
-                <label for="custom-title">Título da Corrida:</label>
-                <input type="text" id="custom-title" placeholder="Digite o título...">
-                <button id="btn-toggle-title" class="toggle-btn active" data-display="title">
-                    <span class="toggle-icon">✓</span>
-                    <span class="toggle-label">Mostrar Título</span>
-                </button>
-            </div>
-        </div>
-
-        <div class="control-section">
-            <h3>📊 Colunas da Tabela</h3>
-            <div class="toggle-grid">
-                <button class="toggle-btn active" data-column="position" data-default="true">
-                    <span class="toggle-icon">✓</span><span class="toggle-label">Posição</span>
-                </button>
-                <button class="toggle-btn active" data-column="number" data-default="true">
-                    <span class="toggle-icon">✓</span><span class="toggle-label">Nº Piloto</span>
-                </button>
-                <button class="toggle-btn active" data-column="flag" data-default="true">
-                    <span class="toggle-icon">✓</span><span class="toggle-label">Bandeira</span>
-                </button>
-                <button class="toggle-btn active" data-column="name" data-default="true">
-                    <span class="toggle-icon">✓</span><span class="toggle-label">Nome</span>
-                </button>
-                <button class="toggle-btn active" data-column="initials" data-default="true">
-                    <span class="toggle-icon">✓</span><span class="toggle-label">Iniciais</span>
-                </button>
-                <button class="toggle-btn" data-column="lap">
-                    <span class="toggle-icon">✓</span><span class="toggle-label">Nº Volta</span>
-                </button>
-                <button class="toggle-btn active" data-column="time" data-default="true">
-                    <span class="toggle-icon">✓</span><span class="toggle-label">Tempo Volta</span>
-                </button>
-                <button class="toggle-btn" data-column="gap">
-                    <span class="toggle-icon">✓</span><span class="toggle-label">Gap</span>
-                </button>
-                <button class="toggle-btn" data-column="interval">
-                    <span class="toggle-icon">✓</span><span class="toggle-label">Intervalo</span>
-                </button>
-                <button class="toggle-btn" data-column="best-lap">
-                    <span class="toggle-icon">✓</span><span class="toggle-label">Melhor Volta Nº</span>
-                </button>
-                <button class="toggle-btn" data-column="best-time">
-                    <span class="toggle-icon">✓</span><span class="toggle-label">Melhor Tempo</span>
-                </button>
-            </div>
-        </div>
-
-        <div class="control-section">
-            <h3>✂️ Limite de Caracteres (Nome)</h3>
-            <div class="char-limit-control">
-                <label for="char-limit">Máximo de caracteres:</label>
-                <div class="char-input-group">
-                    <input type="range" id="char-limit-slider" min="5" max="50" value="20">
-                    <input type="number" id="char-limit" min="5" max="50" value="20">
-                </div>
-                <div class="char-preview">
-                    <span>Ex: <strong id="char-preview-text">Gustavo Guissi</strong></span>
-                </div>
-            </div>
-        </div>
-
-        <div class="control-section">
-            <h3>🎨 Exibição</h3>
-            <div class="toggle-grid">
-                <button class="toggle-btn active" data-display="header" data-default="true">
-                    <span class="toggle-icon">✓</span><span class="toggle-label">Cabeçalho</span>
-                </button>
-                <button class="toggle-btn active" data-display="timer" data-default="true">
-                    <span class="toggle-icon">✓</span><span class="toggle-label">Timer</span>
-                </button>
-                <button class="toggle-btn active" data-display="table-header" data-default="true">
-                    <span class="toggle-icon">✓</span><span class="toggle-label">Cab. Tabela</span>
-                </button>
-            </div>
-        </div>
-
-        <div class="control-section actions">
-            <button id="btn-reset" class="btn-secondary">Redefinir Padrão</button>
-            <button id="btn-toggle-panel" class="btn-secondary">Ocultar Painel</button>
-        </div>
-
-        <div class="control-section instructions">
-            <h3>📖 Instruções</h3>
-            <ul>
-                <li>Cole o link do LiveTime e clique em <strong>Carregar</strong></li>
-                <li>Use os botões para mostrar/ocultar colunas</li>
-                <li>Ajuste o <strong>limite de caracteres</strong> para nomes mais curtos</li>
-                <li>Botões <span class="badge active">verdes</span> = visível | <span class="badge">cinzas</span> = oculto</li>
-                <li>Clique em <strong>Ocultar Painel</strong> para overlay limpo</li>
-                <li>Pressione <kbd>F11</kbd> para tela cheia</li>
-            </ul>
-        </div>
+      <label><input type="checkbox" checked data-toggle="race-name"> Nome da Corrida</label>
+      <label><input type="checkbox" checked data-toggle="lap-count"> Nº de Voltas</label>
+      <label><input type="checkbox" checked data-toggle="driver-number"> Nº Piloto</label>
+      <label><input type="checkbox" checked data-toggle="lap-time"> Tempo da Volta</label>
+      <label><input type="checkbox" checked data-toggle="best-lap"> Melhor Volta</label>
+      <label><input type="checkbox" checked data-toggle="driver-name"> Nome do Piloto</label>
+      <label><input type="checkbox" checked data-toggle="flag"> Bandeira</label>
     </div>
 
-    <button id="btn-show-panel" class="btn-show-panel" style="display: none;">⚙️</button>
+    <!-- LIMITADOR -->
+    <div class="panel-section">
+      <h3>Nome do Piloto</h3>
+      <label>Máx. Caracteres</label>
+      <input type="number" id="name-limit" value="12" min="3" max="30">
+    </div>
 
-    <script>
-        const state = {
-            url: '',
-            columns: {
-                position: true,
-                number: true,
-                flag: true,
-                name: true,
-                initials: true,
-                lap: false,
-                time: true,
-                gap: false,
-                interval: false,
-                'best-lap': false,
-                'best-time': false
-            },
-            display: {
-                header: true,
-                timer: true,
-                'table-header': true,
-                logo: false,
-                title: true
-            },
-            charLimit: 20,
-            data: [],
-            refreshInterval: null,
-            logoUrl: '',
-            customTitle: ''
-        };
+    <!-- STATUS -->
+    <div class="panel-section">
+      <h3>Status</h3>
+      <div id="status">Aguardando link...</div>
+    </div>
 
-        const sampleData = [
-            { position: 1, number: '12', name: 'Gustavo Guissi', initials: 'GUG', flag: 'SP', lap: 2, time: '00:55.799', gap: '00:00.000', interval: '00:00.000', bestLap: 2, bestTime: '00:55.799' },
-            { position: 2, number: '89', name: 'Gino Tincani', initials: 'GIT', flag: 'SP', lap: 2, time: '00:56.690', gap: '00:00.497', interval: '00:00.497', bestLap: 2, bestTime: '00:56.690' },
-            { position: 3, number: '68', name: 'Andre Cortado', initials: 'ANC', flag: 'SP', lap: 2, time: '00:56.531', gap: '00:00.830', interval: '00:00.333', bestLap: 2, bestTime: '00:56.531' },
-            { position: 4, number: '71', name: 'Bernardo Wiemer', initials: 'BEW', flag: 'SP', lap: 2, time: '00:56.687', gap: '00:01.417', interval: '00:00.587', bestLap: 2, bestTime: '00:56.687' },
-            { position: 5, number: '10', name: 'Jose Roberto Caruso', initials: 'JRC', flag: 'SP', lap: 2, time: '00:57.222', gap: '00:01.841', interval: '00:00.424', bestLap: 2, bestTime: '00:57.222' },
-            { position: 6, number: '00', name: 'Luis Henrique Fontanetti', initials: 'LHF', flag: 'SP', lap: 2, time: '00:57.102', gap: '00:02.212', interval: '00:00.371', bestLap: 2, bestTime: '00:57.102' },
-            { position: 7, number: '97', name: 'Alexandre Da Cunha Sampaio', initials: 'ADS', flag: 'SP', lap: 2, time: '00:57.976', gap: '00:02.878', interval: '00:00.666', bestLap: 2, bestTime: '00:57.976' },
-            { position: 8, number: '90', name: 'Fernando Bellini', initials: 'FEB', flag: 'SP', lap: 2, time: '00:58.006', gap: '00:03.165', interval: '00:00.287', bestLap: 2, bestTime: '00:58.006' },
-            { position: 9, number: '05', name: 'Thiago Jose Da Silva', initials: 'TJS', flag: 'SP', lap: 2, time: '00:57.408', gap: '00:03.361', interval: '00:00.196', bestLap: 2, bestTime: '00:57.408' },
-            { position: 10, number: '26', name: 'Roberto Gorayb Correa Filho', initials: 'RGF', flag: 'SP', lap: 2, time: '00:57.975', gap: '00:03.436', interval: '00:00.075', bestLap: 2, bestTime: '00:57.975' },
-            { position: 11, number: '33', name: 'Carlos Eduardo Santos', initials: 'CES', flag: 'SP', lap: 2, time: '00:58.120', gap: '00:03.621', interval: '00:00.185', bestLap: 2, bestTime: '00:58.120' },
-            { position: 12, number: '45', name: 'Ricardo Almeida Silva', initials: 'RAS', flag: 'SP', lap: 2, time: '00:58.345', gap: '00:03.846', interval: '00:00.225', bestLap: 2, bestTime: '00:58.345' },
-            { position: 13, number: '77', name: 'Paulo Henrique Costa', initials: 'PHC', flag: 'SP', lap: 2, time: '00:58.567', gap: '00:04.068', interval: '00:00.222', bestLap: 2, bestTime: '00:58.567' },
-            { position: 14, number: '22', name: 'Marcos Antonio Ferreira', initials: 'MAF', flag: 'SP', lap: 2, time: '00:58.789', gap: '00:04.290', interval: '00:00.222', bestLap: 2, bestTime: '00:58.789' },
-            { position: 15, number: '88', name: 'Felipe Gabriel Souza', initials: 'FGS', flag: 'SP', lap: 2, time: '00:59.012', gap: '00:04.513', interval: '00:00.223', bestLap: 2, bestTime: '00:59.012' },
-            { position: 16, number: '55', name: 'Leonardo Martins Oliveira', initials: 'LMO', flag: 'SP', lap: 2, time: '00:59.234', gap: '00:04.735', interval: '00:00.222', bestLap: 2, bestTime: '00:59.234' },
-            { position: 17, number: '11', name: 'Diego Fernando Lima', initials: 'DFL', flag: 'SP', lap: 2, time: '00:59.456', gap: '00:04.957', interval: '00:00.222', bestLap: 2, bestTime: '00:59.456' },
-            { position: 18, number: '99', name: 'Rafael Augusto Pereira', initials: 'RAP', flag: 'SP', lap: 2, time: '00:59.678', gap: '00:05.179', interval: '00:00.222', bestLap: 2, bestTime: '00:59.678' },
-            { position: 19, number: '44', name: 'Bruno Cesar Rodrigues', initials: 'BCR', flag: 'SP', lap: 2, time: '00:59.901', gap: '00:05.402', interval: '00:00.223', bestLap: 2, bestTime: '00:59.901' },
-            { position: 20, number: '66', name: 'Anderson Luis Barbosa', initials: 'ALB', flag: 'SP', lap: 2, time: '01:00.123', gap: '00:05.624', interval: '00:00.222', bestLap: 2, bestTime: '01:00.123' },
-            { position: 21, number: '13', name: 'Vinicius Alexandre Gomes', initials: 'VAG', flag: 'SP', lap: 2, time: '01:00.345', gap: '00:05.846', interval: '00:00.222', bestLap: 2, bestTime: '01:00.345' },
-            { position: 22, number: '27', name: 'Rodrigo Fabio Mendes', initials: 'RFM', flag: 'SP', lap: 2, time: '01:00.567', gap: '00:06.068', interval: '00:00.222', bestLap: 2, bestTime: '01:00.567' },
-            { position: 23, number: '34', name: 'Thiago Henrique Araujo', initials: 'THA', flag: 'SP', lap: 2, time: '01:00.789', gap: '00:06.290', interval: '00:00.222', bestLap: 2, bestTime: '01:00.789' },
-            { position: 24, number: '56', name: 'Matheus Gabriel Cardoso', initials: 'MGC', flag: 'SP', lap: 2, time: '01:01.012', gap: '00:06.513', interval: '00:00.223', bestLap: 2, bestTime: '01:01.012' },
-            { position: 25, number: '78', name: 'Gabriel Lucas Moreira', initials: 'GLM', flag: 'SP', lap: 2, time: '01:01.234', gap: '00:06.735', interval: '00:00.222', bestLap: 2, bestTime: '01:01.234' },
-            { position: 26, number: '91', name: 'Julio Cesar Nascimento', initials: 'JCN', flag: 'SP', lap: 2, time: '01:01.456', gap: '00:06.957', interval: '00:00.222', bestLap: 2, bestTime: '01:01.456' },
-            { position: 27, number: '19', name: 'Fabiano Roberto Xavier', initials: 'FRX', flag: 'SP', lap: 2, time: '01:01.678', gap: '00:07.179', interval: '00:00.222', bestLap: 2, bestTime: '01:01.678' },
-            { position: 28, number: '41', name: 'Luciano Sergio Campos', initials: 'LSC', flag: 'SP', lap: 2, time: '01:01.901', gap: '00:07.402', interval: '00:00.223', bestLap: 2, bestTime: '01:01.901' },
-            { position: 29, number: '63', name: 'Eduardo Felipe Nogueira', initials: 'EFN', flag: 'SP', lap: 2, time: '01:02.123', gap: '00:07.624', interval: '00:00.222', bestLap: 2, bestTime: '01:02.123' },
-            { position: 30, number: '85', name: 'Renato Carlos Freitas', initials: 'RCF', flag: 'SP', lap: 2, time: '01:02.345', gap: '00:07.846', interval: '00:00.222', bestLap: 2, bestTime: '01:02.345' }
-        ];
+  </div>
 
-        function limitName(name, limit) {
-            if (!name) return '';
-            if (name.length <= limit) return name;
-            return name.substring(0, limit).trim() + '...';
-        }
+</div>
 
-        function updateCharPreview() {
-            const slider = document.getElementById('char-limit-slider');
-            const input = document.getElementById('char-limit');
-            const preview = document.getElementById('char-preview-text');
-            const value = parseInt(slider.value);
-            input.value = value;
-            state.charLimit = value;
-            preview.textContent = limitName('Gustavo Guissi', value);
-            renderTable();
-        }
-
-        function toggleColumn(column, button) {
-            state.columns[column] = !state.columns[column];
-            button.classList.toggle('active', state.columns[column]);
-            updateTableVisibility();
-        }
-
-        function toggleDisplay(display, button) {
-            state.display[display] = !state.display[display];
-            button.classList.toggle('active', state.display[display]);
-            updateDisplayVisibility();
-        }
-
-        function updateTableVisibility() {
-            document.querySelectorAll('#table-header th').forEach(th => {
-                const col = th.dataset.col;
-                if (col && state.columns.hasOwnProperty(col)) {
-                    th.style.display = state.columns[col] ? '' : 'none';
-                }
-            });
-
-            document.querySelectorAll('#table-body tr').forEach(tr => {
-                tr.querySelectorAll('td').forEach((td, index) => {
-                    const th = document.querySelectorAll('#table-header th')[index];
-                    if (th) {
-                        const col = th.dataset.col;
-                        if (col && state.columns.hasOwnProperty(col)) {
-                            td.style.display = state.columns[col] ? '' : 'none';
-                        }
-                    }
-                });
-            });
-        }
-
-        function updateDisplayVisibility() {
-            const header = document.getElementById('f1-header');
-            const timer = document.getElementById('race-timer');
-            const tableHeader = document.getElementById('table-header');
-            const raceName = document.getElementById('race-name');
-            const logoSvg = document.getElementById('f1-logo-svg');
-            const logoImg = document.getElementById('championship-logo');
-
-            if (header) header.style.display = state.display.header ? '' : 'none';
-            if (timer) timer.style.display = state.display.timer ? '' : 'none';
-            if (tableHeader) tableHeader.style.display = state.display['table-header'] ? '' : 'none';
-            if (raceName) raceName.style.display = state.display.title ? '' : 'none';
-            
-            // CORREÇÃO: Lógica corrigida para exibir a logo customizada
-            if (logoSvg) logoSvg.style.display = state.display.logo && state.logoUrl ? 'none' : '';
-            if (logoImg) {
-                if (state.display.logo && state.logoUrl) {
-                    logoImg.src = state.logoUrl;
-                    logoImg.style.display = 'block';
-                } else {
-                    logoImg.style.display = 'none';
-                }
-            }
-        }
-
-        function updateLogo() {
-            const logoUrl = document.getElementById('logo-url').value.trim();
-            state.logoUrl = logoUrl;
-            updateDisplayVisibility();
-        }
-
-        function updateTitle() {
-            const titleInput = document.getElementById('custom-title');
-            const raceName = document.getElementById('race-name');
-            if (titleInput.value.trim()) {
-                state.customTitle = titleInput.value.trim();
-                raceName.textContent = state.customTitle;
-            }
-        }
-
-        function resetToDefault() {
-            document.querySelectorAll('.toggle-btn[data-column]').forEach(btn => {
-                const column = btn.dataset.column;
-                const isDefault = btn.dataset.default === 'true';
-                state.columns[column] = isDefault;
-                btn.classList.toggle('active', isDefault);
-            });
-
-            document.querySelectorAll('.toggle-btn[data-display]').forEach(btn => {
-                const display = btn.dataset.display;
-                const isDefault = btn.dataset.default === 'true';
-                state.display[display] = isDefault;
-                btn.classList.toggle('active', isDefault);
-            });
-
-            state.charLimit = 20;
-            document.getElementById('char-limit-slider').value = 20;
-            document.getElementById('char-limit').value = 20;
-            state.logoUrl = '';
-            state.customTitle = '';
-            document.getElementById('logo-url').value = '';
-            document.getElementById('custom-title').value = '';
-            document.getElementById('race-name').textContent = 'Baterias 31/01/2026 - Corrida 2';
-            
-            updateCharPreview();
-            updateTableVisibility();
-            updateDisplayVisibility();
-        }
-
-        function parseHTMLData(doc) {
-            try {
-                const rows = doc.querySelectorAll('table tbody tr');
-                const drivers = [];
-
-                rows.forEach((row, index) => {
-                    const cells = row.querySelectorAll('td');
-                    if (cells.length >= 11) {
-                        drivers.push({
-                            position: parseInt(cells[0].textContent.trim()) || (index + 1),
-                            number: cells[1].textContent.trim(),
-                            name: cells[3].textContent.trim(),
-                            initials: cells[4].textContent.trim() || cells[3].textContent.trim().substring(0, 3).toUpperCase(),
-                            flag: cells[2].querySelector('img')?.alt || 'BR',
-                            lap: parseInt(cells[5].textContent.trim()) || 0,
-                            time: cells[6].textContent.trim() || '00:00.000',
-                            gap: cells[7].textContent.trim() || '00:00.000',
-                            interval: cells[8].textContent.trim() || '00:00.000',
-                            bestLap: parseInt(cells[9].textContent.trim()) || 0,
-                            bestTime: cells[10].textContent.trim() || '00:00.000'
-                        });
-                    }
-                });
-
-                return drivers.length > 0 ? drivers : null;
-            } catch (error) {
-                console.error('Erro ao fazer parsing dos dados:', error);
-                return null;
-            }
-        }
-
-        function loadDataFromIframe() {
-            try {
-                const iframe = document.getElementById('data-iframe');
-                if (!iframe || !iframe.contentDocument) {
-                    console.error('Iframe não acessível');
-                    return null;
-                }
-
-                const iframeDoc = iframe.contentDocument || iframe.contentWindow.document;
-                return parseHTMLData(iframeDoc);
-            } catch (error) {
-                console.error('Erro ao acessar iframe:', error);
-                return null;
-            }
-        }
-
-        async function loadLiveTimeData() {
-            const urlInput = document.getElementById('laptime-url');
-            const url = urlInput.value.trim();
-            
-            if (!url) {
-                alert('Por favor, insira uma URL válida do LiveTime.');
-                return;
-            }
-
-            state.url = url;
-            document.getElementById('loading').style.display = 'flex';
-
-            // Remove iframe antigo se existir
-            let iframe = document.getElementById('data-iframe');
-            if (iframe) {
-                iframe.remove();
-            }
-
-            // Cria novo iframe invisível
-            iframe = document.createElement('iframe');
-            iframe.id = 'data-iframe';
-            iframe.style.display = 'none';
-            iframe.src = url;
-            document.body.appendChild(iframe);
-
-            // Aguarda o carregamento do iframe
-            iframe.onload = function() {
-                try {
-                    const parsedData = loadDataFromIframe();
-                    
-                    if (parsedData && parsedData.length > 0) {
-                        state.data = parsedData;
-                        console.log(`✓ Carregados ${parsedData.length} pilotos do LiveTime`);
-                        renderTable();
-                        startAutoRefresh();
-                    } else {
-                        console.warn('Não foi possível extrair dados. Usando dados de exemplo.');
-                        state.data = sampleData;
-                        renderTable();
-                    }
-                } catch (error) {
-                    console.error('Erro ao processar dados:', error);
-                    state.data = sampleData;
-                    renderTable();
-                } finally {
-                    document.getElementById('loading').style.display = 'none';
-                }
-            };
-
-            iframe.onerror = function() {
-                console.error('Erro ao carregar iframe');
-                alert('Erro ao carregar dados do LiveTime. Verifique a URL.\n\nUsando dados de exemplo.');
-                state.data = sampleData;
-                renderTable();
-                document.getElementById('loading').style.display = 'none';
-            };
-
-            // Timeout de segurança
-            setTimeout(() => {
-                if (document.getElementById('loading').style.display === 'flex') {
-                    document.getElementById('loading').style.display = 'none';
-                    if (state.data.length === 0) {
-                        state.data = sampleData;
-                        renderTable();
-                    }
-                }
-            }, 10000);
-        }
-
-        function renderTable() {
-            const tbody = document.getElementById('table-body');
-            tbody.innerHTML = '';
-
-            state.data.forEach((driver, index) => {
-                const row = document.createElement('tr');
-                row.className = 'f1-row';
-                if (index === 0) row.classList.add('leader');
-                if (index < 3) row.classList.add('podium');
-
-                const displayName = limitName(driver.name, state.charLimit);
-
-                row.innerHTML = `
-                    <td class="col-position" data-col="position">
-                        <span class="position-number">${driver.position}</span>
-                    </td>
-                    <td class="col-number" data-col="number">
-                        <span class="driver-number">${driver.number}</span>
-                    </td>
-                    <td class="col-flag" data-col="flag">
-                        <img class="flag-icon" src="https://flagcdn.com/w40/${driver.flag.toLowerCase()}.png" alt="${driver.flag}">
-                    </td>
-                    <td class="col-name" data-col="name">
-                        <div class="driver-info">
-                            <span class="driver-name" title="${driver.name}">${displayName}</span>
-                        </div>
-                    </td>
-                    <td class="col-initials" data-col="initials">
-                        <span class="driver-initials">${driver.initials}</span>
-                    </td>
-                    <td class="col-lap" data-col="lap">${driver.lap}</td>
-                    <td class="col-time" data-col="time">${driver.time}</td>
-                    <td class="col-gap" data-col="gap">${driver.gap}</td>
-                    <td class="col-interval" data-col="interval">${driver.interval}</td>
-                    <td class="col-best-lap" data-col="best-lap">${driver.bestLap}</td>
-                    <td class="col-best-time" data-col="best-time">${driver.bestTime}</td>
-                `;
-
-                tbody.appendChild(row);
-            });
-
-            updateTableVisibility();
-        }
-
-        function startAutoRefresh() {
-            if (state.refreshInterval) {
-                clearInterval(state.refreshInterval);
-            }
-
-            state.refreshInterval = setInterval(() => {
-                // Se tiver URL configurada, recarrega os dados do iframe
-                if (state.url) {
-                    try {
-                        const iframe = document.getElementById('data-iframe');
-                        if (iframe) {
-                            // Recarrega o iframe para pegar dados atualizados
-                            iframe.contentWindow.location.reload();
-                            
-                            // Aguarda um momento para o reload
-                            setTimeout(() => {
-                                const parsedData = loadDataFromIframe();
-                                if (parsedData && parsedData.length > 0) {
-                                    state.data = parsedData;
-                                    renderTable();
-                                }
-                            }, 500);
-                        }
-                    } catch (error) {
-                        console.error('Erro ao atualizar dados:', error);
-                    }
-                } else {
-                    // Fallback: simula pequenas variações (modo demo)
-                    state.data.forEach(driver => {
-                        const currentTime = parseTime(driver.time);
-                        if (currentTime) {
-                            const variation = (Math.random() - 0.5) * 0.001;
-                            driver.time = formatTime(currentTime + variation);
-                        }
-                    });
-                    renderTable();
-                }
-            }, 5000);
-        }
-
-        function parseTime(timeStr) {
-            if (!timeStr || timeStr === 'NO TIME') return null;
-            const parts = timeStr.split(':');
-            if (parts.length === 2) {
-                const mins = parseInt(parts[0]);
-                const secs = parseFloat(parts[1]);
-                return mins * 60 + secs;
-            }
-            return parseFloat(timeStr);
-        }
-
-        function formatTime(seconds) {
-            const mins = Math.floor(seconds / 60);
-            const secs = seconds % 60;
-            return `${mins.toString().padStart(2, '0')}:${secs.toFixed(3).padStart(6, '0')}`;
-        }
-
-        function togglePanelVisibility() {
-            const panel = document.getElementById('control-panel');
-            const showBtn = document.getElementById('btn-show-panel');
-            const broadcast = document.getElementById('broadcast-area');
-            
-            panel.classList.add('hidden');
-            showBtn.style.display = 'flex';
-            broadcast.classList.add('full-width');
-        }
-
-        function showPanel() {
-            const panel = document.getElementById('control-panel');
-            const showBtn = document.getElementById('btn-show-panel');
-            const broadcast = document.getElementById('broadcast-area');
-            
-            panel.classList.remove('hidden');
-            showBtn.style.display = 'none';
-            broadcast.classList.remove('full-width');
-        }
-
-        document.addEventListener('DOMContentLoaded', () => {
-            const slider = document.getElementById('char-limit-slider');
-            const input = document.getElementById('char-limit');
-            
-            slider.addEventListener('input', updateCharPreview);
-            input.addEventListener('change', () => {
-                slider.value = input.value;
-                updateCharPreview();
-            });
-
-            document.querySelectorAll('.toggle-btn[data-column]').forEach(btn => {
-                btn.addEventListener('click', () => toggleColumn(btn.dataset.column, btn));
-            });
-
-            document.querySelectorAll('.toggle-btn[data-display]').forEach(btn => {
-                btn.addEventListener('click', () => toggleDisplay(btn.dataset.display, btn));
-            });
-
-            document.getElementById('btn-load').addEventListener('click', loadLiveTimeData);
-            document.getElementById('btn-reset').addEventListener('click', resetToDefault);
-            document.getElementById('btn-toggle-panel').addEventListener('click', togglePanelVisibility);
-            document.getElementById('btn-show-panel').addEventListener('click', showPanel);
-            
-            // CORREÇÃO: Adicionar evento de mudança no input da logo
-            document.getElementById('logo-url').addEventListener('input', updateLogo);
-            document.getElementById('logo-url').addEventListener('change', updateLogo);
-            document.getElementById('custom-title').addEventListener('change', updateTitle);
-            
-            document.getElementById('btn-toggle-logo').addEventListener('click', function() {
-                toggleDisplay('logo', this);
-            });
-            
-            document.getElementById('btn-toggle-title').addEventListener('click', function() {
-                toggleDisplay('title', this);
-            });
-
-            renderTable();
-            updateTableVisibility();
-            updateDisplayVisibility();
-
-            setInterval(() => {
-                const timerEl = document.querySelector('.timer-time');
-                if (timerEl) {
-                    const current = parseTime('00:' + timerEl.textContent);
-                    if (current) {
-                        timerEl.textContent = formatTime(current + 1).substring(3);
-                    }
-                }
-            }, 1000);
-        });
-    </script>
+<script src="script.js"></script>
 </body>
 </html>
 
+/* ===============================
+   INSTRUÇÕES CSS
+   ===============================
 
+   - Toda estilização está neste arquivo
+   - Pode alterar cores, tamanhos e fontes livremente
+   - Fundo transparente para uso como overlay
+   - Layout 75% Laptime / 25% Painel
+   - Alinhamento à esquerda
 
+*/
+
+<style>
+
+:root{
+  --panel-bg: rgba(10,10,10,0.95);
+  --panel-text: #ffffff;
+  --accent: #00ff9c;
+  --font: Arial, Helvetica, sans-serif;
+}
+
+*{
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+}
+
+body{
+  background: transparent; /* Overlay */
+  font-family: var(--font);
+  overflow: hidden;
+}
+
+#app{
+  width: 100vw;
+  height: 100vh;
+  display: flex;
+}
+
+/* ===============================
+   LAPTIME
+================================*/
+
+#laptime-container{
+  width: 75%;
+  height: 100%;
+  background: transparent;
+  display: flex;
+  justify-content: flex-start;
+  align-items: flex-start;
+  padding: 10px;
+}
+
+#laptime-frame{
+  width: 100%;
+  height: 100%;
+  background: transparent;
+}
+
+/* ===============================
+   PAINEL
+================================*/
+
+#control-panel{
+  width: 25%;
+  height: 100%;
+  background: var(--panel-bg);
+  color: var(--panel-text);
+  padding: 15px;
+  overflow-y: auto;
+}
+
+#control-panel h2{
+  text-align: center;
+  margin-bottom: 15px;
+  color: var(--accent);
+}
+
+.panel-section{
+  margin-bottom: 20px;
+  border-bottom: 1px solid rgba(255,255,255,0.1);
+  padding-bottom: 15px;
+}
+
+.panel-section h3{
+  margin-bottom: 10px;
+  font-size: 14px;
+  color: var(--accent);
+}
+
+.panel-section label{
+  display: block;
+  font-size: 13px;
+  margin-bottom: 6px;
+  cursor: pointer;
+}
+
+.panel-section input[type="text"],
+.panel-section input[type="number"]{
+  width: 100%;
+  padding: 6px;
+  margin-top: 5px;
+  border: none;
+  border-radius: 4px;
+}
+
+.panel-section button{
+  width: 100%;
+  margin-top: 8px;
+  padding: 7px;
+  background: var(--accent);
+  border: none;
+  font-weight: bold;
+  cursor: pointer;
+}
+
+.panel-section button:hover{
+  opacity: 0.8;
+}
+
+#status{
+  font-size: 12px;
+  color: #aaa;
+}
+
+</style>
+
+<script>
+/* ===============================
+   SCRIPT
+   ===============================
+
+   - Controla iframe
+   - Injeta CSS
+   - Ativa/desativa campos
+   - Limita nome
+
+*/
+
+const frame = document.getElementById('laptime-frame');
+const statusEl = document.getElementById('status');
+
+function loadLaptime(){
+
+  const url = document.getElementById('laptime-url').value;
+
+  if(!url){
+    alert('Cole o link do laptime');
+    return;
+  }
+
+  frame.src = url;
+
+  statusEl.innerText = 'Carregando...';
+
+  frame.onload = () => {
+    statusEl.innerText = 'Laptime carregado';
+    injectStyles();
+  }
+}
+
+/* ===============================
+   INJEÇÃO DE CSS
+================================*/
+
+function injectStyles(){
+
+  try{
+
+    const doc = frame.contentDocument || frame.contentWindow.document;
+
+    const style = doc.createElement('style');
+
+    style.innerHTML = `
+
+    /* FUNDO TRANSPARENTE */
+    body{
+      background: transparent !important;
+      text-align: left !important;
+    }
+
+    /* ALINHAMENTO */
+    .container, table{
+      margin-left: 0 !important;
+    }
+
+    /* ESCONDER POR PADRÃO */
+    .lap-count,
+    .driver-number,
+    .best-lap{
+      display: none;
+    }
+
+    `;
+
+    doc.head.appendChild(style);
+
+  }catch(e){
+    statusEl.innerText = 'Erro: CORS bloqueado';
+  }
+}
+
+/* ===============================
+   CONTROLES
+================================*/
+
+document.querySelectorAll('[data-toggle]').forEach(box => {
+
+  box.addEventListener('change', () => {
+
+    const target = box.dataset.toggle;
+
+    toggleElement(target, box.checked);
+
+  });
+});
+
+function toggleElement(className, show){
+
+  try{
+
+    const doc = frame.contentDocument || frame.contentWindow.document;
+
+    const els = doc.querySelectorAll(`.${className}`);
+
+    els.forEach(el => {
+      el.style.display = show ? '' : 'none';
+    });
+
+  }catch(e){
+    console.log(e);
+  }
+}
+
+/* ===============================
+   LIMITADOR DE NOME
+================================*/
+
+const nameLimit = document.getElementById('name-limit');
+
+nameLimit.addEventListener('input', applyNameLimit);
+
+function applyNameLimit(){
+
+  try{
+
+    const doc = frame.contentDocument || frame.contentWindow.document;
+
+    const max = parseInt(nameLimit.value);
+
+    const names = doc.querySelectorAll('.driver-name');
+
+    names.forEach(el => {
+
+      let txt = el.innerText;
+
+      if(txt.length > max){
+        el.innerText = txt.substring(0, max) + '…';
+      }
+
+    });
+
+  }catch(e){
+    console.log(e);
+  }
+}
+
+/* ===============================
+   OBSERVADOR
+   Atualiza quando tabela muda
+================================*/
+
+function observeChanges(){
+
+  try{
+
+    const doc = frame.contentDocument || frame.contentWindow.document;
+
+    const target = doc.body;
+
+    const observer = new MutationObserver(() => {
+      applyNameLimit();
+    });
+
+    observer.observe(target, { childList:true, subtree:true });
+
+  }catch(e){
+    console.log(e);
+  }
+}
+
+frame.addEventListener('load', observeChanges);
+
+</script>
